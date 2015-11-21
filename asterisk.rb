@@ -14,11 +14,21 @@ class Asterisk < Formula
   devel do
     url "https://github.com/asterisk/asterisk.git", :branch => "13"
     version "13.7-devel"
+
+    patch :p0 do
+      url "https://raw.githubusercontent.com/adilinden/homebrew-asterisk/master/patches/asterisk-13.7-devel_basic-pbx_install.diff"
+      sha256 "09e615e10ecd73838ec68012bed5d93b35d737ecc240e176500a9e0876243cea"
+    end
   end
 
   head do
     url "https://github.com/asterisk/asterisk.git"
     version "14-head"
+
+    patch :p0 do
+      url "https://raw.githubusercontent.com/adilinden/homebrew-asterisk/master/patches/asterisk-13.7-devel_basic-pbx_install.diff"
+      sha256 "09e615e10ecd73838ec68012bed5d93b35d737ecc240e176500a9e0876243cea"
+    end
   end
 
   option "with-dev-mode", "Enable dev mode in Asterisk"
