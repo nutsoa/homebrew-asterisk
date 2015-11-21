@@ -1,38 +1,44 @@
 # Homebrew Asterisk
 
-[![Build Status](https://travis-ci.org/leedm777/homebrew-asterisk.svg?branch=master)](https://travis-ci.org/leedm777/homebrew-asterisk)
+[![Build Status](https://travis-ci.org/adilinden/homebrew-asterisk.svg?branch=master)](https://travis-ci.org/adilinden/homebrew-asterisk)
 
-This repo contains the Homebrew formulas I use for my [Asterisk][ast] dev
-machine. This is pretty much a few packages which, for one reason or
-another, aren't the best fit for going into Homebrew itself.
+Forked from [leedm777/homebrew-asterisk] for my own personal use.
+
+This repo contains the Homebrew formulas I use for my [Asterisk][ast] PBX running on OS X. 
 
 ## Installation
 
-    xcode-select --install
-    brew tap leedm777/homebrew-asterisk
+    brew tap adilinden/homebrew-asterisk
     brew install asterisk
-
-Installation will automagically add the `homebrew/dupes` tap.
 
 ## Installation options
 
- * `--with-clang` - Compile with clang instead of gcc
+ * `--with-clang` - Compile with clang instead of gcc.
    * This is a new-ish option in Asterisk, and might be a bit crashy.
- * `--with-dev-mode` - Enable dev mode in Asterisk
+ * `--with-dev-mode` - Enable dev mode in Asterisk.
    * Disable optimizations, turns up build warnings, and enables the test
      framework.
- * `--devel` - Install development version 13
+ * `without-optimizations` - allow for debugging.
+ * `--devel` - Install development version 13.
    * Build the latest code from the 13 branch.
- * `--HEAD` - Install HEAD version
+ * `--HEAD` - Install HEAD version.
    * Build the latest code from the master branch.
 
 ## Configuration
 
-Configuration files are in `/usr/local/etc/asterisk`. Detailed configuration
-docs can be found on the [Asterisk wiki][config-docs].
+There are two sets of example configuration files.
 
-If you have problems after an upgrade, it may be because of bad path information
-that ended up in `asterisk.conf`. Check that the directories section looks like:
+- `samples`, which contain comments explaining each command option
+- `basic-pbx`, which is a functional basic PBX
+
+Because the Asterisk `install samples` will overwite any files present in the `/usr/local/etc/asterisk` directory, I choose to install the samples in more sensible locations.
+
+- `/usr/local/share/doc/asterisk/samples`
+- `/usr/local/share/doc/asterisk/basic-pbx`
+
+Place Asterisk configuration files, either your own or files from `samples` or `basic-pbx` in `/usr/local/etc/asterisk`. Detailed configuration docs can be found on the [Asterisk wiki][config-docs].
+
+If you have problems after an upgrade, it may be because of bad path information that ended up in `asterisk.conf`. Check that the directories section looks like:
 
     [directories](!)
     astetcdir => /usr/local/etc/asterisk
@@ -52,7 +58,7 @@ that ended up in `asterisk.conf`. Check that the directories section looks like:
 If you want to just run Asterisk occasionally, just start it up using
 `/usr/local/sbin/asterisk -c`. It is recommended to *not* run Asterisk as root.
 
-## Running as a service
+## Running as a service at user login
 
 To have launchd start asterisk at login:
 
@@ -76,10 +82,93 @@ To restart asterisk after a `core stop now`:
 
     launchctl start homebrew.mxcl.asterisk
 
+## Running as a system service
+
+It is recommended to *not* run Asterisk as root.  A dedicated system user for asterisk can be created using the following procedure.
+
+### Create the asterisk user
+
+Use the OS X dscl tool to create a new user account for asterisk.  Start by finding a uid and gid that is not in use.  This little script can be pasted into a terminal window to find the next uid and guid combo above 301 that is not in use.
+
+```bash
+    for (( uid = 301; uid<500; uid++ )) ; do \
+        if ! id -u $uid &>/dev/null; then \
+            if ! dscl . -ls Groups gid | grep -q [^0-9]$uid\$ ; then \
+                 echo Found: $uid; \
+                 export this_id=$uid; \
+                 break; \
+            fi; \
+        fi; \
+    done;
+```
+
+Now create the asterisk user account.  If the above snippet was run the $this_id variable will already contain the uid and gid to use.
+
+```bash
+    sudo dscl . -create /Groups/_asterisk
+    sudo dscl . -create /Groups/_asterisk Password \*
+    sudo dscl . -create /Groups/_asterisk PrimaryGroupID $this_id
+    sudo dscl . -create /Groups/_asterisk RealName "Asterisk Daemon"
+    sudo dscl . -create /Groups/_asterisk RecordName _asterisk asterisk
+
+    sudo dscl . -create /Users/_asterisk
+    sudo dscl . -create /Users/_asterisk NFSHomeDirectory /usr/local/var/lib/asterisk
+    sudo dscl . -create /Users/_asterisk Password \*
+    sudo dscl . -create /Users/_asterisk PrimaryGroupID $this_id
+    sudo dscl . -create /Users/_asterisk RealName "Asterisk Daemon"
+    sudo dscl . -create /Users/_asterisk RecordName _asterisk asterisk
+    sudo dscl . -create /Users/_asterisk UniqueID $this_id
+    sudo dscl . -create /Users/_asterisk UserShell /bin/bash
+    sudo dscl . -create /Users/_asterisk IsHidden 1
+
+    sudo dscl . -delete /Users/_asterisk AuthenticationAuthority
+    sudo dscl . -delete /Users/_asterisk PasswordPolicyOptions
+```
+
+Fix directory permissions of directories that the new asterisk user requires write access to.
+
+```bash
+    sudo chown -R asterisk:asterisk /usr/local/var/lib/asterisk
+    sudo chown -R asterisk:asterisk /usr/local/var/log/asterisk
+    sudo chown -R asterisk:asterisk /usr/local/var/run/asterisk
+    sudo chown -R asterisk:asterisk /usr/local/var/spool/asterisk
+```
+
+### Launch the asterisk service
+
+Modify `/usr/local/opt/asterisk/homebrew.mxcl.asterisk.plist` and add keys to specify the user and group we generated earlier.
+
+```xml
+    <key>UserName</key>
+    <string>nobody</string>
+    <key>GroupName</key>
+    <string>nobody</string>
+```
+
+Install the modified `/usr/local/opt/asterisk/homebrew.mxcl.asterisk.plist` in `/Library/LaunchDaemons`.
+
+    sudo cp /usr/local/opt/asterisk/homebrew.mxcl.asterisk.plist /Library/LaunchDaemons/
+
+Then to load asterisk now:
+
+    sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.asterisk.plist
+
+To reload asterisk after an upgrade:
+
+    sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.asterisk.plist
+    sudo launchctl load /Library/LaunchDaemons/homebrew.mxcl.asterisk.plist
+
+To connect to Asterisk running as a service:
+
+    sudo -u asterisk /usr/local/sbin/asterisk -r
+
+To restart asterisk after a `core stop now`:
+
+    sudo launchctl start homebrew.mxcl.asterisk
+
 ## Uninstall
 
-To uninstall Asterisk, run `brew rm asterisk`. To get rid of all local state and
-configuration data:
+To uninstall Asterisk, run `brew rm asterisk`. To get rid of all local state and configuration data:
 
     $ rm -rf /usr/local/etc/asterisk /usr/local/var/lib/asterisk \
         /usr/local/var/log/asterisk /usr/local/var/run/asterisk \
@@ -97,3 +186,5 @@ plist feature. If you had followed those instructions, you may need to remove
 
  [ast]: http://asterisk.org/
  [config-docs]: https://wiki.asterisk.org/wiki/x/cYXAAQ
+ [leedm777/homebrew-asterisk]: https://github.com/leedm777/homebrew-asterisk
+ 
