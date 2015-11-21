@@ -68,7 +68,7 @@ class Asterisk < Formula
                           "--sysconfdir=#{etc}",
                           "--localstatedir=#{var}",
                           "--datadir=#{share}/#{name}",
-                          "--docdir=#{doc}/asterisk",
+                          "--docdir=#{doc}",
                           "--enable-dev-mode=#{dev_mode ? 'yes' : 'no'}",
                           "--with-pjproject=#{pjsip.opt_prefix}",
                           "--with-sqlite3=#{sqlite.opt_prefix}",
@@ -108,10 +108,10 @@ class Asterisk < Formula
     end
 
     system "make", "all", "NOISY_BUILD=yes"
-    system "make", "install", "samples"
+    system "make", "ASTETCDIR=#{doc}/samples", "install", "samples"
 
     # Replace Cellar references to opt/asterisk
-    system "sed", "-i", "", "s#Cellar/asterisk/[^/]*/#opt/asterisk/#", "#{etc}/asterisk/asterisk.conf"
+    system "sed", "-i", "", "s#Cellar/asterisk/[^/]*/#opt/asterisk/#", "#{doc}/samples/asterisk.conf"
   end
 
   def plist; <<-EOS.undent
