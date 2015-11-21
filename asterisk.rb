@@ -117,8 +117,9 @@ class Asterisk < Formula
     system "make", "ASTETCDIR=#{doc}/basic-pbx", "basic-pbx"
 
     # Replace Cellar references to opt/asterisk
-    system "sed", "-i", "", "s#Cellar/asterisk/[^/]*/#opt/asterisk/#", "#{doc}/samples/asterisk.conf"
-    system "sed", "-i", "", "s#Cellar/asterisk/[^/]*/#opt/asterisk/#", "#{doc}/basic-pbx/asterisk.conf"
+    inreplace doc/"samples/asterisk.conf", prefix, opt_prefix
+    inreplace doc/"basic-pbx/asterisk.conf", prefix, opt_prefix
+
   end
 
   def plist; <<-EOS.undent
