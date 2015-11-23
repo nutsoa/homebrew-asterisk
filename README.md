@@ -140,9 +140,9 @@ Modify `/usr/local/opt/asterisk/homebrew.mxcl.asterisk.plist` and add keys to sp
 
 ```xml
     <key>UserName</key>
-    <string>nobody</string>
+    <string>asterisk</string>
     <key>GroupName</key>
-    <string>nobody</string>
+    <string>asterisk</string>
 ```
 
 Install the modified `/usr/local/opt/asterisk/homebrew.mxcl.asterisk.plist` in `/Library/LaunchDaemons`.
