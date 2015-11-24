@@ -1,5 +1,18 @@
 # homebrew-asterisk
 
+## 2015-11-23
+
+ * Added extra-sounds option.  As far as I know homebrew does not like formulas that download content.  Maybe there is a better way to do this?
+
+## 2015-11-22
+
+ * Updated the launchd plist as original would refuse to load asterisk when dedicated asterisk user was added.
+
+## 2015-11-21
+
+ * Changed installation directory for sample configuration.  This protects any customized configuration installed in `/usr/local/etc/asterisk` from being oeverwritten by the asterisk installation step.
+ * Added patches to allow installation of basic-pbx configuration.  The basic-pbx configuartion is installed along side samples configuration.
+
 ## 2015-11-19
 
  * Added separate optimize and dev-mode options (although dev-mode still implies

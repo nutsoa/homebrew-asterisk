@@ -18,7 +18,9 @@ This repo contains the Homebrew formulas I use for my [Asterisk][ast] PBX runnin
  * `--with-dev-mode` - Enable dev mode in Asterisk.
    * Disable optimizations, turns up build warnings, and enables the test
      framework.
- * `without-optimizations` - allow for debugging.
+ * `--without-optimizations` - disable optimizations.
+ * `--with-extra-sounds` - Extra sounds.
+   * Download and install extra and core sounds in ulaw, g729 and gsm.
  * `--devel` - Install development version 13.
    * Build the latest code from the 13 branch.
  * `--HEAD` - Install HEAD version.

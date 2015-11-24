@@ -35,6 +35,7 @@ class Asterisk < Formula
   option "with-clang", "Compile with clang instead of gcc"
   option "with-gcc", "Compile with gcc (default)"
   option "without-optimizations", "Disable optimizations"
+  option "with-extra-sounds", "Download and install extra and core sounds in ulaw, g729 and gsm"
 
   if build.without? "clang"
     fails_with :llvm
@@ -122,6 +123,17 @@ class Asterisk < Formula
              "--enable", "DO_CRASH", "menuselect.makeopts"
       system "menuselect/menuselect",
              "--enable-category", "MENUSELECT_TESTS", "menuselect.makeopts"
+    end
+
+    if build.with? "extra-sounds"
+      system "menuselect/menuselect",
+             "--enable", "CORE-SOUNDS-EN-ULAW", 
+             "--enable", "CORE-SOUNDS-EN-GSM", 
+             "--enable", "CORE-SOUNDS-EN-G729", 
+             "--enable", "EXTRA-SOUNDS-EN-ULAW", 
+             "--enable", "EXTRA-SOUNDS-EN-GSM", 
+             "--enable", "EXTRA-SOUNDS-EN-G729", 
+             "menuselect.makeopts"
     end
 
     system "make", "all", "NOISY_BUILD=yes"
