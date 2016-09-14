@@ -1,34 +1,12 @@
 class Asterisk < Formula
   desc "Open Source PBX and telephony toolkit"
   homepage "http://www.asterisk.org"
-  url "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-13.6.0.tar.gz"
-  sha256 "8a01b53c946d092ac561c11b404f68cd328306d0e3b434a7485a11d4b175005a"
+  url "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-13.11.2.tar.gz"
+  sha256 "6ea7001bb11ba11fcdbb5febb028b2fd62c44c7bda3cc966b8aaafcb429c5a3a"
 
-  stable do
-    patch :p0 do
-      url "https://raw.githubusercontent.com/adilinden/homebrew-asterisk/master/patches/asterisk-13.6.0_basic-pbx.diff"
-      sha256 "53a99bd7cfa3dca371c929c5a0f366639c92e4ca7e03e882af5a79756fd11443"
-    end
-  end
-
-  devel do
-    url "https://github.com/asterisk/asterisk.git", :branch => "13"
-    version "13.7-devel"
-
-    patch :p0 do
-      url "https://raw.githubusercontent.com/adilinden/homebrew-asterisk/master/patches/asterisk-13.7-devel_basic-pbx_install.diff"
-      sha256 "09e615e10ecd73838ec68012bed5d93b35d737ecc240e176500a9e0876243cea"
-    end
-  end
-
-  head do
-    url "https://github.com/asterisk/asterisk.git"
-    version "14-head"
-
-    patch :p0 do
-      url "https://raw.githubusercontent.com/adilinden/homebrew-asterisk/master/patches/asterisk-13.7-devel_basic-pbx_install.diff"
-      sha256 "09e615e10ecd73838ec68012bed5d93b35d737ecc240e176500a9e0876243cea"
-    end
+  patch :p0 do
+    url "https://raw.githubusercontent.com/adilinden/homebrew-asterisk/master/patches/asterisk-13.11.2_basic-pbx_install.diff"
+    sha256 "ca2d789ba44022408cc12b3b506649d642791bd903e3278b1f3a706021c41929"
   end
 
   option "with-dev-mode", "Enable dev mode in Asterisk"
@@ -48,16 +26,13 @@ class Asterisk < Formula
 
   depends_on "pkg-config" => :build
 
-  depends_on "gmime"
-  depends_on "iksemel"
   depends_on "jansson"
-  depends_on "homebrew/dupes/ncurses"
   depends_on "openssl"
   depends_on "pjsip-asterisk"
   depends_on "speex"
   depends_on "sqlite"
-  depends_on "srtp"
-  depends_on "unixodbc"
+  depends_on "homebrew/versions/srtp15"
+  depends_on "libxml2"
 
   def install
     dev_mode = false
@@ -73,7 +48,6 @@ class Asterisk < Formula
 
     openssl = Formula["openssl"]
     sqlite = Formula["sqlite"]
-    unixodbc = Formula["unixodbc"]
     pjsip = Formula["pjsip-asterisk"]
 
     # Some Asterisk code doesn't follow strict aliasing rules
@@ -87,14 +61,14 @@ class Asterisk < Formula
                           "--localstatedir=#{var}",
                           "--datadir=#{share}/#{name}",
                           "--docdir=#{doc}",
-                          "--enable-dev-mode=#{dev_mode ? 'yes' : 'no'}",
+                          "--enable-dev-mode=no",
                           "--with-pjproject=#{pjsip.opt_prefix}",
                           "--with-sqlite3=#{sqlite.opt_prefix}",
                           "--with-ssl=#{openssl.opt_prefix}",
-                          "--with-unixodbc=#{unixodbc.opt_prefix}",
                           "--without-gmime",
                           "--without-gtk2",
                           "--without-iodbc",
+                          "--without-unixodbc",
                           "--without-netsnmp"
 
     system "make", "menuselect/cmenuselect",
@@ -143,7 +117,7 @@ class Asterisk < Formula
 
     # Replace Cellar references to opt/asterisk
     inreplace doc/"samples/asterisk.conf", prefix, opt_prefix
-    inreplace doc/"basic-pbx/asterisk.conf", prefix, opt_prefix
+    #inreplace doc/"basic-pbx/asterisk.conf", prefix, opt_prefix
 
   end
 

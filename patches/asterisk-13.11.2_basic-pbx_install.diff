@@ -1,0 +1,10 @@
+--- Makefile.orig	2016-09-14 00:23:07.000000000 -0500
++++ Makefile	2016-09-14 00:23:44.000000000 -0500
+@@ -687,6 +687,7 @@
+ #  (1) the configuration directory to install from
+ #  (2) the extension to strip off
+ define INSTALL_CONFIGS
++	$(INSTALL) -d "$(DESTDIR)$(ASTETCDIR)"
+ 	@for x in configs/$(1)/*$(2); do \
+ 		dst="$(DESTDIR)$(ASTETCDIR)/`$(BASENAME) $$x $(2)`"; \
+ 		if [ -f "$${dst}" ]; then \
