@@ -1,5 +1,6 @@
 os:
   - osx
+osx_image: xcode7.3
 language: c
 compiler:
   - clang
@@ -15,6 +16,7 @@ before_install:
   - comm -12 <(brew deps ./asterisk.rb) <(brew outdated) | xargs brew upgrade
   - brew ls
 install:
+  - brew install pjsip-asterisk --verbose
   - brew install --only-dependencies ./asterisk.rb
 script:
   - brew reinstall ./asterisk.rb --verbose --with-dev-mode --with-${CC} ${EXTRA}
