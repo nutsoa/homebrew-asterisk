@@ -1,6 +1,6 @@
 # homebrew-asterisk
 
-## 2016-09-13 - nutsoa
+## 2018-07-26 - nutsoa
 
  * Asterisk 13.22.0
 
