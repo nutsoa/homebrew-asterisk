@@ -1,8 +1,8 @@
 class Asterisk < Formula
   desc "Open Source PBX and telephony toolkit"
   homepage "http://www.asterisk.org"
-  url "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-13.11.2.tar.gz"
-  sha256 "6ea7001bb11ba11fcdbb5febb028b2fd62c44c7bda3cc966b8aaafcb429c5a3a"
+  url "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-13.22.0.tar.gz"
+  sha256 "bd5922f19e37c4cfc368e007b15e440bd8c709b5ed53e55496a030429ed7759e"
 
   patch :p0 do
     url "https://raw.githubusercontent.com/adilinden/homebrew-asterisk/master/patches/asterisk-13.11.2_basic-pbx_install.diff"
@@ -101,12 +101,12 @@ class Asterisk < Formula
 
     if build.with? "extra-sounds"
       system "menuselect/menuselect",
-             "--enable", "CORE-SOUNDS-EN-ULAW", 
-             "--enable", "CORE-SOUNDS-EN-GSM", 
-             "--enable", "CORE-SOUNDS-EN-G729", 
-             "--enable", "EXTRA-SOUNDS-EN-ULAW", 
-             "--enable", "EXTRA-SOUNDS-EN-GSM", 
-             "--enable", "EXTRA-SOUNDS-EN-G729", 
+             "--enable", "CORE-SOUNDS-EN-ULAW",
+             "--enable", "CORE-SOUNDS-EN-GSM",
+             "--enable", "CORE-SOUNDS-EN-G729",
+             "--enable", "EXTRA-SOUNDS-EN-ULAW",
+             "--enable", "EXTRA-SOUNDS-EN-GSM",
+             "--enable", "EXTRA-SOUNDS-EN-G729",
              "menuselect.makeopts"
     end
 
