@@ -1,5 +1,9 @@
 # homebrew-asterisk
 
+## 2016-09-13 - nutsoa
+
+ * Asterisk 13.22.0
+
 ## 2016-09-13 - adilinden
 
  * Now build works on OS X 10.11.6.
