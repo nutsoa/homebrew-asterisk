@@ -8,7 +8,7 @@ This repo contains the Homebrew formulas I use for my [Asterisk][ast] PBX runnin
 
 ## Installation
 
-    brew tap adilinden/homebrew-asterisk
+    brew tap nutsoa/homebrew-asterisk
     brew install asterisk
 
 ## Installation options
