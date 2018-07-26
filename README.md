@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/adilinden/homebrew-asterisk.svg?branch=master)](https://travis-ci.org/adilinden/homebrew-asterisk)
 
-Forked from [leedm777/homebrew-asterisk] for my own personal use.
+Forked from [adilinden/homebrew-asterisk] for my own personal use.
 
 This repo contains the Homebrew formulas I use for my [Asterisk][ast] PBX running on OS X. 
 
@@ -174,15 +174,12 @@ To uninstall Asterisk, run `brew rm asterisk`. To get rid of all local state and
 
 ## Upgrading from older versions
 
-I used to have notes in the README for creating an `asterisk` user for running
-Asterisk. This is not very homebrew-y, so I dropped it.
-
-I also had a custom plist that I recommended instead of homebrew's built-in
+Here is a plist that I recommended instead of homebrew's built-in
 plist feature. If you had followed those instructions, you may need to remove
 `/Library/LaunchDaemons/org.asterisk.asterisk.plist` before installing
 [the new plist above](#Running as a service).
 
  [ast]: http://asterisk.org/
  [config-docs]: https://wiki.asterisk.org/wiki/x/cYXAAQ
- [leedm777/homebrew-asterisk]: https://github.com/leedm777/homebrew-asterisk
+ [nutsoa/homebrew-asterisk]: https://github.com/nutsoa/homebrew-asterisk
  
