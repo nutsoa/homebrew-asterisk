@@ -19,7 +19,7 @@ class Asterisk < Formula
     fails_with :llvm
     fails_with :clang
     # :gcc just matches on apple-gcc42
-    fails_with :gcc
+    fails_with :gcc-7
 
     depends_on "gcc" => :build
   end
