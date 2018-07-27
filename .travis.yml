@@ -3,7 +3,7 @@ os:
 osx_image: xcode8.3
 compiler:
   - clang
-  - gcc
+  - gcc-7
 env:
   - EXTRA=
   - EXTRA=--devel
