@@ -4,10 +4,10 @@ class Asterisk < Formula
   url "http://downloads.asterisk.org/pub/telephony/asterisk/releases/asterisk-13.22.0.tar.gz"
   sha256 "bd5922f19e37c4cfc368e007b15e440bd8c709b5ed53e55496a030429ed7759e"
 
-  patch :p0 do
-    url "https://raw.githubusercontent.com/adilinden/homebrew-asterisk/master/patches/asterisk-13.11.2_basic-pbx_install.diff"
-    sha256 "ca2d789ba44022408cc12b3b506649d642791bd903e3278b1f3a706021c41929"
-  end
+#  patch :p0 do
+#    url "https://raw.githubusercontent.com/adilinden/homebrew-asterisk/master/patches/asterisk-13.11.2_basic-pbx_install.diff"
+#    sha256 "ca2d789ba44022408cc12b3b506649d642791bd903e3278b1f3a706021c41929"
+#  end
 
   option "with-dev-mode", "Enable dev mode in Asterisk"
   option "with-clang", "Compile with clang instead of gcc"
@@ -19,7 +19,7 @@ class Asterisk < Formula
     fails_with :llvm
     fails_with :clang
     # :gcc just matches on apple-gcc42
-    fails_with :gcc-7
+    fails_with :gcc
 
     depends_on "gcc" => :build
   end
@@ -56,6 +56,7 @@ class Asterisk < Formula
     # Use brew's pkg-config
     ENV["PKG_CONFIG"] = "#{HOMEBREW_PREFIX}/bin/pkg-config"
 
+    system "which", "gcc-7"
     system "./configure", "--prefix=#{prefix}",
                           "--sysconfdir=#{etc}",
                           "--localstatedir=#{var}",
