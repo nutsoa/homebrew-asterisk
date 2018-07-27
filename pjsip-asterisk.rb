@@ -11,7 +11,7 @@ class PjsipAsterisk < Formula
   depends_on "openssl"
   depends_on "portaudio"
   depends_on "speex"
-  depends_on "homebrew/versions/srtp15"
+  depends_on "srtp@1.5"
 
   patch :p0, :DATA
 
