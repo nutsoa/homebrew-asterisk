@@ -1,21 +1,46 @@
 os:
   - osx
-osx_image: xcode8.0
-language: c
+osx_image: xcode8.3
 compiler:
   - clang
   - gcc
 env:
   - EXTRA=
+  - EXTRA=--devel
+  - EXTRA=--HEAD
+matrix:
+  include:
+    # GCC on an Xcode 9.2 machine has trouble with syslog.h
+    # See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82200
+    - osx_image: xcode9.2
+      compiler: clang
+      env: EXTRA=
+    - osx_image: xcode9.2
+      compiler: clang
+      env: EXTRA=--devel
+    - osx_image: xcode9.2
+      compiler: clang
+      env: EXTRA=--HEAD
+language: c
 before_install:
+  # Fetch the latest Homebrew, for the freshest bugs
+  - export HOMEBREW_DEVELOPER=1
   - env
   - brew update
+  # on the xcode8.3 machine, oclint breaks the install of gcc
+  - brew cask uninstall oclint
   - brew tap nutsoa/homebrew-asterisk
-  # manually tap versions so brew deps will work
-  - brew tap homebrew/versions
-  - comm -12 <(brew deps ./asterisk.rb) <(brew outdated) | xargs brew upgrade
-  - brew ls
+  # checkout the current branch for installing PJSIP
+  - git -C $(brew --prefix)/Homebrew/Library/Taps/nutsoa/homebrew-asterisk pull origin ${TRAVIS_BRANCH}
+  # upgrade only outdated dependencies
+  - comm -12 <(brew deps --include-build ./asterisk.rb) <(brew outdated) | xargs brew upgrade
+  # print some versions, because debugging
+  - brew --version
+  - brew ls --versions
 install:
+  # install pjsip verbosely, in case we need to debug that build, too
+  # We also have to install it via the tap, b/c it won't be picked up as a
+  # dependency if we install it as ./pjsip-asterisk.rb
   - brew install pjsip-asterisk --verbose
   - brew install --only-dependencies ./asterisk.rb
 script:
