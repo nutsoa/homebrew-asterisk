@@ -16,7 +16,7 @@ class Asterisk < Formula
   option "with-extra-sounds", "Download and install extra and core sounds in ulaw, g729 and gsm"
 
   if build.without? "clang"
-    fails_with :llvm
+#    fails_with :llvm
     fails_with :clang
     # :gcc just matches on apple-gcc42
     fails_with :gcc
@@ -31,7 +31,7 @@ class Asterisk < Formula
   depends_on "pjsip-asterisk"
   depends_on "speex"
   depends_on "sqlite"
-  depends_on "homebrew/versions/srtp15"
+  depends_on "srtp@1.5"
   depends_on "libxml2"
 
   def install
